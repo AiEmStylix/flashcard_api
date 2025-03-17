@@ -7,14 +7,27 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
     public DbSet<UserModel> Users { get; set; }
+    public DbSet<DeckModel> Decks { get; set; }
+    public DbSet<CardModel> Cards { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-        
-        //Add Current timestamp value to postgresql
-        modelBuilder.Entity<UserModel>()
-            .Property(u => u.CreatedAt)
-            .HasDefaultValueSql("CURRENT_TIMESTAMP")
-            .ValueGeneratedOnAdd();
+        //Convert PascalCase to snake_case
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            entity.SetTableName(ToSnakeCase(entity.GetTableName()));
+
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(ToSnakeCase(property.GetColumnName()));
+            }
+        }
+    }
+    
+    private string ToSnakeCase(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return name;
+
+        return System.Text.RegularExpressions.Regex.Replace(name, "([a-z0-9])([A-Z])", "$1_$2").ToLower();
     }
 }
