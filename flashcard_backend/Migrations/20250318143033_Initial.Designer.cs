@@ -12,8 +12,8 @@ using flashcard_backend.DatabaseContext;
 namespace flashcard_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250312093354_Adding Card and Deck table")]
-    partial class AddingCardandDecktable
+    [Migration("20250318143033_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,95 +27,74 @@ namespace flashcard_backend.Migrations
 
             modelBuilder.Entity("flashcard_backend.Models.CardModel", b =>
                 {
-                    b.Property<string>("CardId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("card_id")
-                        .HasDefaultValueSql("'C' || nextval('card_seq')");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.Property<string>("BackContent")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Back")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("back_content");
+                        .HasColumnType("text")
+                        .HasColumnName("back");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("created_at");
 
-                    b.Property<string>("DeckId")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("DeckId")
+                        .HasColumnType("integer")
                         .HasColumnName("deck_id");
 
-                    b.Property<string>("DeckModelDeckId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FrontContent")
+                    b.Property<string>("Front")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("front_content");
+                        .HasColumnType("text")
+                        .HasColumnName("front");
 
-                    b.Property<int>("Ordering")
-                        .HasColumnType("integer")
-                        .HasColumnName("order");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                    b.HasKey("Id");
 
-                    b.HasKey("CardId");
-
-                    b.HasIndex("DeckModelDeckId");
+                    b.HasIndex("DeckId");
 
                     b.ToTable("flashcards");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>
                 {
-                    b.Property<string>("DeckId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasColumnName("deck_id")
-                        .HasDefaultValueSql("'D' || nextval('deck_seq')");
-
-                    b.Property<int?>("CategoryId")
                         .HasColumnType("integer")
-                        .HasColumnName("category_id");
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("DeckTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("deck_title");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
+                        .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean")
                         .HasColumnName("is_public");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
-                    b.HasKey("DeckId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -132,10 +111,8 @@ namespace flashcard_backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -145,8 +122,7 @@ namespace flashcard_backend.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("text")
                         .HasColumnName("password_hash");
 
                     b.Property<string>("Username")
@@ -162,9 +138,13 @@ namespace flashcard_backend.Migrations
 
             modelBuilder.Entity("flashcard_backend.Models.CardModel", b =>
                 {
-                    b.HasOne("flashcard_backend.Models.DeckModel", null)
+                    b.HasOne("flashcard_backend.Models.DeckModel", "Deck")
                         .WithMany("Cards")
-                        .HasForeignKey("DeckModelDeckId");
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deck");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>

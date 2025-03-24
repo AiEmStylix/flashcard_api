@@ -12,6 +12,10 @@ public class ApplicationDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+        
         //Convert PascalCase to snake_case
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {

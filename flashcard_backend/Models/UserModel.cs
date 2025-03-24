@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace flashcard_backend.Models;
 
+
+public enum UserRole
+{
+    User,
+    Admin
+}
+
 [Table("users")]
 public class UserModel
 {   
@@ -18,6 +25,8 @@ public class UserModel
 
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
+
+    [Required] public UserRole Role { get; set; } = UserRole.User;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
