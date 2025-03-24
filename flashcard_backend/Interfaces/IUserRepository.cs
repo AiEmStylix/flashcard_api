@@ -4,7 +4,9 @@ namespace flashcard_backend.Interfaces;
 
 public interface IUserRepository
 {
-    Task AddUserAsync(UserModel user);
-    Task<UserModel?> GetByEmailAsync(string email);
-    Task<UserModel?> GetByUsernameAsync(string username);
+    Task<IEnumerable<UserModel>> GetAllUsersAsync();
+    Task<UserModel> GetUserByIdAsync(int id);
+    Task<UserModel> CreateUserAsync(UserModel user);
+    Task<UserModel> UpdateUserAsync(int id, UserModel user);
+    Task<bool> DeleteUserAsync(int id);
 }

@@ -7,8 +7,6 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
     public DbSet<UserModel> Users { get; set; }
-    public DbSet<DeckModel> Decks { get; set; }
-    public DbSet<CardModel> Cards { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
