@@ -1,6 +1,22 @@
-@flashcard_backend_HostAddress = http://localhost:5175
+@flashcard_backend_HostAddress = http://localhost:8080
 
 GET {{flashcard_backend_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+GET localhost:8080/api/user/
+Accept: application/json
+
+###
+GET localhost:8080/api/user/3
+Accept: application/json
+
+### Update User
+PATCH http://localhost:8080/api/user/3
+Content-Type: application/json
+Accept: application/json
+
+### Delete user
+DELETE {{flashcard_backend_HostAddress}}/api/user/2
+Accept: application/json
+Content-Type: application/json

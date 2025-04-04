@@ -14,6 +14,8 @@ builder.Services.AddControllers();
 
 //DI for instance
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var connectionString = builder.Configuration.GetConnectionString("Postgres");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
