@@ -12,6 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Nuxt frontend URL
+              .AllowAnyHeader()
+              .AllowAnyMethod(); // Include DELETE
+    });
+});
+
 //DI for instance
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -27,6 +37,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors();
+
 
 app.UseHttpsRedirection();
 
