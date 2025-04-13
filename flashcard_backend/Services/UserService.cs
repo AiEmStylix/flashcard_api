@@ -55,6 +55,10 @@ public class UserService : IUserService
             CreatedAt = DateTime.UtcNow
         };
         var createdUser = await _userRepository.CreateUserAsync(user);
+        if (createdUser == null)
+        {
+            return null;
+        }
         return new UserDto
         {
             Id = createdUser.Id,
@@ -104,5 +108,10 @@ public class UserService : IUserService
     public async Task<bool> DeleteUserAsync(int id)
     {
         return await _userRepository.DeleteUserAsync(id);
+    }
+    
+    public async Task<DeleteUserResultDto> DeleteMultipleUsersAsync(List<int> userIds)
+    {
+        return await _userRepository.DeleteMutipleUsersAsync(userIds);
     }
 }

@@ -9,4 +9,6 @@ public interface IUserService
     Task<UserDto> CreateUserAsync(CreateUserDto userDto);
     Task<UserDto> UpdateUserAsync(int id, UpdateUserDto userDto);
     Task<bool> DeleteUserAsync(int id);
+    Task<DeleteUserResultDto> DeleteMultipleUsersAsync(List<int> userIds);
+
 }

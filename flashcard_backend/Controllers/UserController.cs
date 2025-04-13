@@ -62,14 +62,40 @@ public class UserController : ControllerBase
 
         return Ok(deleteUser);
     }
-    
+
+    [HttpDelete("bulk")]
+    public async Task<IActionResult> DeleteMultipleUserAsync([FromBody] List<int> uIds)
+    {
+        if (uIds == null | uIds.Count == 0)
+        {
+            return BadRequest(new { message = "No User Id provided" });
+        }
+
+        var result = await _userService.DeleteMultipleUsersAsync(uIds);
+
+        return Ok(new
+        {
+            deleted = result.Deleted,
+            notFound = result.NotFound
+        });
+    }
     [HttpPost]
     public async Task<IActionResult> AddNewUserAsync([FromBody] CreateUserDto newUserDto) {
-        var newUser = await _userService.CreateUserAsync(newUserDto);
-        if (newUser == null)
+        try
         {
-            return BadRequest();
+            var createdUser = await _userService.CreateUserAsync(newUserDto);
+            if (createdUser == null)
+            {
+                return Conflict(new 
+                    { message = "Username/Email already exists." }
+                ); //409 code
+            }
+
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
-        return Ok(newUser);
+        catch (Exception e)
+        {
+            return StatusCode(500, new { message = "An error occurred", error = e.Message });
+        }
     }
 }
