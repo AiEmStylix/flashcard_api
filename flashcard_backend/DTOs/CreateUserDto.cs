@@ -12,11 +12,13 @@ public class CreateUserDto
     [Required]
     [EmailAddress]
     public string Email { get; set; }
+    
+    [Required]
+    public string Password { get; set; }
 
     [Required]
     [StringLength(100)]
     public string FullName { get; set; }
 
-    [Required]
-    public UserRole Role { get; set; }
+    public UserRole Role { get; set; } = UserRole.User;
 }

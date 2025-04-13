@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace flashcard_backend.Controllers;
 
-[Route("api/auth")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task< IActionResult> Login([FromBody] LoginRequestDto loginDto)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
     {
         var isValid = await _authService.ValidateUser(loginDto);
         if (!isValid)
@@ -24,13 +24,49 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid Credentials" });
         }
 
-        var user = await _authService.GetUserByUsernameAsync(loginDto.Username);
+        HttpContext.Session.SetString("Username", loginDto.Username);
+
         return Ok(new
         {
-            Id = user.Id,
-            Username = user.Username,
-            Email = user.Email,
+            Username = loginDto.Username,
+            Password = loginDto.Password,
             Message = "Login Succesfully"
         });
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] CreateUserDto registerDto)
+    {
+        var result = await _authService.RegisterUser(registerDto);
+        if (!result)
+        {
+            return BadRequest(new { message = "User/Email already exists" });
+        }
+
+        return Ok(new
+        {
+            Username = registerDto.Username,
+            Message = "Register successfully",
+
+        });
+    }
+
+    [HttpGet("me")]
+    public IActionResult GetCurrentUser()
+    {
+        var username = HttpContext.Session.GetString("Username");
+        if (username == null)
+        {
+            return Unauthorized(new { message = "Not logged in" });
+        }
+
+        return Ok(new { username });
+    }
+
+    [HttpPost("logout")]
+    public IActionResult LogOut()
+    {
+        HttpContext.Session.Clear();
+        return Ok(new { message = "Logout succesfully" });
     }
 }

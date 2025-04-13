@@ -20,9 +20,19 @@ public class UserRepository : IUserRepository
       return await _context.Users.ToListAsync();
    }
 
-   public async Task<UserModel> GetUserByIdAsync(int id)
+   public async Task<UserModel?> GetUserByIdAsync(int id)
    {
       return await _context.Users.FindAsync(id);
+   }
+
+   public async Task<UserModel?> GetUserByUserName(string username)
+   {
+      return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+   }
+
+   public async Task<UserModel?> GetUserByEmail(string email)
+   {
+      return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
    }
 
    public async Task<UserModel> CreateUserAsync(UserModel user)

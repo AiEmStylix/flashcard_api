@@ -79,23 +79,5 @@ public class UserController : ControllerBase
             notFound = result.NotFound
         });
     }
-    [HttpPost]
-    public async Task<IActionResult> AddNewUserAsync([FromBody] CreateUserDto newUserDto) {
-        try
-        {
-            var createdUser = await _userService.CreateUserAsync(newUserDto);
-            if (createdUser == null)
-            {
-                return Conflict(new 
-                    { message = "Username/Email already exists." }
-                ); //409 code
-            }
 
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, new { message = "An error occurred", error = e.Message });
-        }
-    }
 }

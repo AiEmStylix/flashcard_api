@@ -7,10 +7,11 @@ namespace flashcard_backend.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
+    private readonly IPasswordService _passwordService;
+    public UserService(IUserRepository userRepository, IPasswordService passwordService)
     {
         _userRepository = userRepository;
+        _passwordService = passwordService;
     }
 
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -37,38 +38,9 @@ public class UserService : IUserService
             Email = user.Email,
             FullName = user.FullName,
             Role = user.Role,
-            // Status = user.Status
         };
     }
-
-    public async Task<UserDto> CreateUserAsync(CreateUserDto userDto)
-    {
-        var user = new UserModel
-        {
-            Username = userDto.Username,
-            Email = userDto.Email,
-            FullName = userDto.FullName,
-            //Default password 
-            PasswordHash = "1234",
-            Role = userDto.Role,
-            // Status = UserStatus.Active,
-            CreatedAt = DateTime.UtcNow
-        };
-        var createdUser = await _userRepository.CreateUserAsync(user);
-        if (createdUser == null)
-        {
-            return null;
-        }
-        return new UserDto
-        {
-            Id = createdUser.Id,
-            Username = createdUser.Username,
-            Email = createdUser.Email,
-            FullName = createdUser.FullName,
-            Role = createdUser.Role,
-            // Status = createdUser.Status
-        };
-    }
+    
 
     public async Task<UserDto> UpdateUserAsync(int id, UpdateUserDto userDto)
     {
@@ -88,9 +60,6 @@ public class UserService : IUserService
         if (userDto.Role.HasValue)
             existingUser.Role = userDto.Role.Value;
 
-        // if (userDto.Status.HasValue)
-        //     existingUser.Status = userDto.Status.Value;
-
         var updatedUser = await _userRepository.UpdateUserAsync(id, existingUser);
 
         // Manual mapping back to DTO
@@ -101,7 +70,6 @@ public class UserService : IUserService
             Email = updatedUser.Email,
             FullName = updatedUser.FullName,
             Role = updatedUser.Role,
-            // Status = updatedUser.Status
         };
     }
 
