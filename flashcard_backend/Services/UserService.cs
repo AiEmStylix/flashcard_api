@@ -23,7 +23,7 @@ public class UserService : IUserService
             Email = user.Email,
             FullName = user.FullName,
             Role = user.Role,
-            Status = user.Status
+            // Status = user.Status
         }).ToList();
     }
 
@@ -37,7 +37,7 @@ public class UserService : IUserService
             Email = user.Email,
             FullName = user.FullName,
             Role = user.Role,
-            Status = user.Status
+            // Status = user.Status
         };
     }
 
@@ -48,9 +48,10 @@ public class UserService : IUserService
             Username = userDto.Username,
             Email = userDto.Email,
             FullName = userDto.FullName,
+            //Default password 
             PasswordHash = "1234",
             Role = userDto.Role,
-            Status = UserStatus.Active,
+            // Status = UserStatus.Active,
             CreatedAt = DateTime.UtcNow
         };
         var createdUser = await _userRepository.CreateUserAsync(user);
@@ -61,7 +62,7 @@ public class UserService : IUserService
             Email = createdUser.Email,
             FullName = createdUser.FullName,
             Role = createdUser.Role,
-            Status = createdUser.Status
+            // Status = createdUser.Status
         };
     }
 
@@ -83,8 +84,8 @@ public class UserService : IUserService
         if (userDto.Role.HasValue)
             existingUser.Role = userDto.Role.Value;
 
-        if (userDto.Status.HasValue)
-            existingUser.Status = userDto.Status.Value;
+        // if (userDto.Status.HasValue)
+        //     existingUser.Status = userDto.Status.Value;
 
         var updatedUser = await _userRepository.UpdateUserAsync(id, existingUser);
 
@@ -96,7 +97,7 @@ public class UserService : IUserService
             Email = updatedUser.Email,
             FullName = updatedUser.FullName,
             Role = updatedUser.Role,
-            Status = updatedUser.Status
+            // Status = updatedUser.Status
         };
     }
 

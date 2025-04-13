@@ -62,4 +62,14 @@ public class UserController : ControllerBase
 
         return Ok(deleteUser);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> AddNewUserAsync([FromBody] CreateUserDto newUserDto) {
+        var newUser = await _userService.CreateUserAsync(newUserDto);
+        if (newUser == null)
+        {
+            return BadRequest();
+        }
+        return Ok(newUser);
+    }
 }

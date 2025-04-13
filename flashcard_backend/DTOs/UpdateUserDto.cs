@@ -11,5 +11,5 @@ public class UpdateUserDto
 
     public UserRole? Role { get; set; }
 
-    public UserStatus? Status { get; set; }
+    // public UserStatus? Status { get; set; }
 }

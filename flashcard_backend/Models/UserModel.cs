@@ -29,7 +29,7 @@ public class UserModel
     [Required]
     public UserRole Role { get; set; }
     
-    public UserStatus Status { get; set; }
+    // public UserStatus Status { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLogin { get; set; }
@@ -45,9 +45,9 @@ public enum UserRole
     Moderator = 3
 }
 
-public enum UserStatus
-{
-    Active = 1,
-    Inactive = 2,
-    Suspended = 3
-}
+// public enum UserStatus
+// {
+//     Active = 1,
+//     Inactive = 2,
+//     Suspended = 3
+// }

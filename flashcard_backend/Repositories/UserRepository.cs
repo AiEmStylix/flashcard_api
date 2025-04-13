@@ -42,7 +42,7 @@ public class UserRepository : IUserRepository
       //Update properties
       existingUser.FullName = user.FullName;
       existingUser.Role = user.Role;
-      existingUser.Status = user.Status;
+      // existingUser.Status = user.Status;
 
       await _context.SaveChangesAsync();
       return existingUser;
