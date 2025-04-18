@@ -1,11 +1,13 @@
 using flashcard_backend.DTOs;
 using flashcard_backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace flashcard_backend.Controllers;
 
 [ApiController]
 [Route("/api/v1/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

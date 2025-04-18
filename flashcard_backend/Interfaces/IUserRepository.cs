@@ -10,7 +10,8 @@ public interface IUserRepository
     Task<UserModel?> GetUserByUserName(string username);
     Task<UserModel?> GetUserByEmail(string email);
     Task<UserModel?> CreateUserAsync(UserModel user);
-    Task<UserModel?> UpdateUserAsync(int id, UserModel user);
+    Task<UserModel?> UpdateUserAsync(UserModel user);
     Task<bool> DeleteUserAsync(int id);
     Task<DeleteUserResultDto> DeleteMutipleUsersAsync(List<int> uIDs);
+    Task<UserModel> GetUserByPersistentToken(string token);
 }

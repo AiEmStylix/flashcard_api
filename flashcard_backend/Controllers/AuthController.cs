@@ -18,19 +18,29 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
     {
-        var isValid = await _authService.ValidateUser(loginDto);
-        if (!isValid)
+        var (success, message, user) = await _authService.ValidateUser(loginDto);
+        if (!success)
         {
-            return Unauthorized(new { message = "Invalid Credentials" });
+            return Unauthorized(new LoginResponse
+            {
+                Success = false,
+                Message = message
+            });
         }
 
-        HttpContext.Session.SetString("Username", loginDto.Username);
-
-        return Ok(new
+        await _authService.SignInUser(HttpContext, user, loginDto.RememberMe);
+        return Ok(new LoginResponse
         {
-            Username = loginDto.Username,
-            Password = loginDto.Password,
-            Message = "Login Succesfully"
+            Success = true,
+            Message = "Login successful",
+            User = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.Username,
+                FullName = user.FullName,
+                Role = user.Role
+            }
         });
     }
 

@@ -13,6 +13,13 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserModel>()
             .HasIndex(u => u.Username)
             .IsUnique();
+
+        modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.PersistentSessionToken);
         
         //Convert PascalCase to snake_case
         foreach (var entity in modelBuilder.Model.GetEntityTypes())

@@ -60,7 +60,7 @@ public class UserService : IUserService
         if (userDto.Role.HasValue)
             existingUser.Role = userDto.Role.Value;
 
-        var updatedUser = await _userRepository.UpdateUserAsync(id, existingUser);
+        var updatedUser = await _userRepository.UpdateUserAsync(existingUser);
 
         // Manual mapping back to DTO
         return new UserDto

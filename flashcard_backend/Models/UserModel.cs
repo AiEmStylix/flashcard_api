@@ -33,6 +33,9 @@ public class UserModel
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLogin { get; set; }
+    
+    public string PersistentSessionToken { get; set; }
+    public DateTime? PersistentSessionExpiry { get; set; }
 
     // Relationships
     public List<DeckModel> Decks { get; set; } = new();
@@ -44,10 +47,3 @@ public enum UserRole
     Admin = 2,
     Moderator = 3
 }
-
-// public enum UserStatus
-// {
-//     Active = 1,
-//     Inactive = 2,
-//     Suspended = 3
-// }

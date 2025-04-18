@@ -35,6 +35,18 @@ public class UserRepository : IUserRepository
       return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
    }
 
+   public async Task<UserModel> GetUserByPersistentToken(string token)
+   {
+      if (string.IsNullOrEmpty(token))
+      {
+         return null;
+      }
+
+      return await _context.Users.FirstOrDefaultAsync(u =>
+         u.PersistentSessionToken == token &&
+         u.PersistentSessionExpiry > DateTime.UtcNow);
+   }
+
    public async Task<UserModel> CreateUserAsync(UserModel user)
    {
       bool isExists = await _context.Users.AnyAsync(u => u.Username == user.Username || u.Email == user.Email);
@@ -47,9 +59,9 @@ public class UserRepository : IUserRepository
       return user;
    }
 
-   public async Task<UserModel> UpdateUserAsync(int id, UserModel user)
+   public async Task<UserModel> UpdateUserAsync(UserModel user)
    {
-      var existingUser = await _context.Users.FindAsync(id);
+      var existingUser = await _context.Users.FindAsync(user.Id);
       if (existingUser == null)
       {
          return null;
