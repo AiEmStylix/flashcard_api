@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         {
             return Unauthorized();
         }
-
+        SetRefreshTokenCookies(result.RefreshToken);
         return result;
     }
 
@@ -42,21 +42,28 @@ public class AuthController : ControllerBase
         {
             return Unauthorized();
         }
-
+        SetRefreshTokenCookies(result.RefreshToken);
         return result;
     }
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<ActionResult<LoginResponse?>> Refresh([FromBody] RefreshRequest request)
+    public async Task<ActionResult<LoginResponse?>> Refresh()
     {
-        if (string.IsNullOrEmpty(request.Token))
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
         {
             return BadRequest("Invalid token");
         }
 
-        var result = await _authService.RefreshToken(request.Token);
-        return result is not null ? result : Unauthorized();
+        var result = await _authService.RefreshToken(refreshToken);
+        if (result is not null)
+        {
+            SetRefreshTokenCookies(result.RefreshToken!);
+            return result;
+        }
+
+        return Unauthorized();
     }
 
     [Authorize]
@@ -70,6 +77,14 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new { email });
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("refreshToken");
+        return Ok(new { message = "Logout successfully" });
     }
 
     private void SetRefreshTokenCookies(string refreshtoken)
