@@ -8,22 +8,10 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
     public DbSet<UserModel> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-        _ = modelBuilder.Entity<UserModel>().HasData([
-            new UserModel
-            {
-                Id = 1,
-                FullName = "Admin",
-                Username = "admin",
-                Email = "admin@test123.com",
-                PasswordHash = PasswordHashHandler.HashPassword("admin"),
-                Role = UserRole.User,
-            }
-        ]);
-        
         modelBuilder.Entity<UserModel>()
             .HasIndex(u => u.Username)
             .IsUnique();
@@ -35,7 +23,7 @@ public class ApplicationDbContext : DbContext
         //Convert PascalCase to snake_case
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
-            entity.SetTableName(ToSnakeCase(entity.GetTableName()));
+            entity.SetTableName(ToSnakeCase(entity.GetTableName()!));
 
             foreach (var property in entity.GetProperties())
             {
