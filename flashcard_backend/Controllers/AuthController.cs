@@ -12,24 +12,51 @@ namespace flashcard_backend.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly JwtService _jwtService;
+    private readonly IAuthService _authService;
 
-    public AuthController(JwtService jwtService)
+
+    public AuthController(IAuthService authService)
     {
-        _jwtService = jwtService;
+        _authService = authService;
     }
 
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequestDto request)
     {
-        var result = await _jwtService.Authenticate(request);
+        var result = await _authService.Authenticate(request);
         if (result is null)
         {
             return Unauthorized();
         }
 
         return result;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<ActionResult<RegisterResponse>> Register([FromBody] RegisterRequest request)
+    {
+        var result = await _authService.Register(request);
+        if (result is null)
+        {
+            return Unauthorized();
+        }
+
+        return result;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponse?>> Refresh([FromBody] RefreshRequest request)
+    {
+        if (string.IsNullOrEmpty(request.Token))
+        {
+            return BadRequest("Invalid token");
+        }
+
+        var result = await _authService.RefreshToken(request.Token);
+        return result is not null ? result : Unauthorized();
     }
 
     [Authorize]

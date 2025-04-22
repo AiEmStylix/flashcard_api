@@ -7,5 +7,4 @@ public interface IJwtService
 {
     string GenerateAccessToken(string email);
     string GenerateRefreshToken();
-    bool ValidateRefreshToken(RefreshToken refreshToken);
 }

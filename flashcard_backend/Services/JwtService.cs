@@ -77,14 +77,5 @@ public class JwtService : IJwtService
     {
         return Guid.NewGuid().ToString();
     }
-
-    public bool ValidateRefreshToken(RefreshToken refreshToken)
-    {
-        if (refreshToken is null || refreshToken.Expiry < DateTime.UtcNow)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    
 }

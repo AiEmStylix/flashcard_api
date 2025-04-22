@@ -7,11 +7,9 @@ namespace flashcard_backend.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IPasswordService _passwordService;
-    public UserService(IUserRepository userRepository, IPasswordService passwordService)
+    public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _passwordService = passwordService;
     }
 
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
