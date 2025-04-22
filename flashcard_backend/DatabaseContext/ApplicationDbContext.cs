@@ -1,3 +1,4 @@
+using flashcard_backend.Handler;
 using flashcard_backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,19 @@ public class ApplicationDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        _ = modelBuilder.Entity<UserModel>().HasData([
+            new UserModel
+            {
+                Id = 1,
+                FullName = "Admin",
+                Username = "admin",
+                Email = "admin@test123.com",
+                PasswordHash = PasswordHashHandler.HashPassword("admin"),
+                Role = UserRole.User,
+            }
+        ]);
+        
         modelBuilder.Entity<UserModel>()
             .HasIndex(u => u.Username)
             .IsUnique();
@@ -17,9 +31,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserModel>()
             .HasIndex(u => u.Email)
             .IsUnique();
-
-        modelBuilder.Entity<UserModel>()
-            .HasIndex(u => u.PersistentSessionToken);
         
         //Convert PascalCase to snake_case
         foreach (var entity in modelBuilder.Model.GetEntityTypes())

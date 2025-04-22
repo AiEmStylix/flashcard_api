@@ -12,8 +12,8 @@ using flashcard_backend.DatabaseContext;
 namespace flashcard_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250418015933_Update db")]
-    partial class Updatedb
+    [Migration("20250422051611_Remove persistent token field for user table")]
+    partial class Removepersistenttokenfieldforusertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,15 +135,6 @@ namespace flashcard_backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
-                    b.Property<DateTime?>("PersistentSessionExpiry")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("persistent_session_expiry");
-
-                    b.Property<string>("PersistentSessionToken")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("persistent_session_token");
-
                     b.Property<int>("Role")
                         .HasColumnType("integer")
                         .HasColumnName("role");
@@ -158,8 +149,6 @@ namespace flashcard_backend.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("PersistentSessionToken");
 
                     b.HasIndex("Username")
                         .IsUnique();

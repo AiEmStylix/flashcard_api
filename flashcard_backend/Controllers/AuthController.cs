@@ -1,6 +1,10 @@
+using System.Security.Claims;
 using flashcard_backend.DTOs;
 using flashcard_backend.Interfaces;
+using flashcard_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace flashcard_backend.Controllers;
 
@@ -8,75 +12,36 @@ namespace flashcard_backend.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly JwtService _jwtService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(JwtService jwtService)
     {
-        _authService = authService;
+        _jwtService = jwtService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
+    public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequestDto request)
     {
-        var (success, message, user) = await _authService.ValidateUser(loginDto);
-        if (!success)
+        var result = await _jwtService.Authenticate(request);
+        if (result is null)
         {
-            return Unauthorized(new LoginResponse
-            {
-                Success = false,
-                Message = message
-            });
+            return Unauthorized();
         }
 
-        await _authService.SignInUser(HttpContext, user, loginDto.RememberMe);
-        return Ok(new LoginResponse
-        {
-            Success = true,
-            Message = "Login successful",
-            User = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Username = user.Username,
-                FullName = user.FullName,
-                Role = user.Role
-            }
-        });
+        return result;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CreateUserDto registerDto)
+    [Authorize]
+    [HttpPost("me")]
+    public IActionResult GetMe()
     {
-        var result = await _authService.RegisterUser(registerDto);
-        if (!result)
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
         {
-            return BadRequest(new { message = "User/Email already exists" });
+            return Unauthorized(new { message = "User not found" });
         }
 
-        return Ok(new
-        {
-            Username = registerDto.Username,
-            Message = "Register successfully",
-
-        });
-    }
-
-    [HttpGet("me")]
-    public IActionResult GetCurrentUser()
-    {
-        var username = HttpContext.Session.GetString("Username");
-        if (username == null)
-        {
-            return Unauthorized(new { message = "Not logged in" });
-        }
-
-        return Ok(new { username });
-    }
-
-    [HttpPost("logout")]
-    public IActionResult LogOut()
-    {
-        HttpContext.Session.Clear();
-        return Ok(new { message = "Logout succesfully" });
+        return Ok(new { email });
     }
 }

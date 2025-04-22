@@ -13,5 +13,4 @@ public interface IUserRepository
     Task<UserModel?> UpdateUserAsync(UserModel user);
     Task<bool> DeleteUserAsync(int id);
     Task<DeleteUserResultDto> DeleteMutipleUsersAsync(List<int> uIDs);
-    Task<UserModel> GetUserByPersistentToken(string token);
 }

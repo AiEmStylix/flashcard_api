@@ -33,9 +33,6 @@ public class UserModel
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLogin { get; set; }
-    
-    public string PersistentSessionToken { get; set; }
-    public DateTime? PersistentSessionExpiry { get; set; }
 
     // Relationships
     public List<DeckModel> Decks { get; set; } = new();

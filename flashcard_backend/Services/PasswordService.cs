@@ -5,16 +5,14 @@ namespace flashcard_backend.Services;
 
 public class PasswordService : IPasswordService
 {
-    private readonly PasswordHasher<String> _hasher = new PasswordHasher<string>();
-
     public string HashPassword(string password)
     {
-        return _hasher.HashPassword(null, password);
+        return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
     }
 
-    public bool VerifyPassword(string hashedPassword, string providedPassoword)
+    public bool VerifyPassword(string hashedPassword, string providedPassword)
     {
-        var result = _hasher.VerifyHashedPassword(null, hashedPassword, providedPassoword);
-        return result == PasswordVerificationResult.Success;
+        var isValid = BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword);
+        return isValid;
     }
 }

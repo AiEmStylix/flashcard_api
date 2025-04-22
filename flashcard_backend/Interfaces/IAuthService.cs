@@ -9,6 +9,4 @@ public interface IAuthService
     Task<bool> RegisterUser(CreateUserDto createUserDto);
     Task SignInUser(HttpContext httpContext, UserModel user, bool rememberme);
     Task SignOutUser(HttpContext httpContext);
-    Task<UserModel> GetUserByPersistentToken(string token);
-    string GeneratePersistentToken();
 }
