@@ -71,4 +71,16 @@ public class AuthController : ControllerBase
 
         return Ok(new { email });
     }
+
+    private void SetRefreshTokenCookies(string refreshtoken)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UtcNow.AddDays(7),
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        };
+        Response.Cookies.Append("refreshToken", refreshtoken, cookieOptions);
+    }
 }
