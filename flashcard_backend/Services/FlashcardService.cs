@@ -27,10 +27,39 @@ public class FlashcardService : IFlashcardService
         }).ToList();
     }
 
-    public async Task<CardModel?> GetFlashcardById(int id)
+    public async Task<FlashcardResponse?> GetFlashcardById(int id)
     {
-        return await _flashcardRepository.GetFlashcardByIdAsync(id);
+        var flashcard = await _flashcardRepository.GetFlashcardByIdAsync(id);
+        if (flashcard is null)
+        {
+            return null;
+        }
+
+        return new FlashcardResponse
+        {
+            Id = flashcard.Id,
+            Question = flashcard.Question,
+            Answer = flashcard.Answer,
+            CreatedAt = flashcard.CreatedAt,
+            DeckId = flashcard.DeckId,
+        };
     }
-    
-    
+
+    public async Task<IEnumerable<FlashcardResponse?>> GetAllFlashCardByDeck(int deckId)
+    {
+        var flashcards = await _flashcardRepository.GetFlashcardsByDeckId(deckId);
+        if (flashcards is null)
+        {
+            return null;
+        }
+
+        return flashcards.Select(flashcard => new FlashcardResponse
+        {
+            Id = flashcard.Id,
+            Question = flashcard.Question,
+            Answer = flashcard.Answer,
+            CreatedAt = flashcard.CreatedAt,
+            DeckId = flashcard.DeckId,
+        }).ToList();
+    }
 }

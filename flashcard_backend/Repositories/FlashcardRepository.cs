@@ -23,4 +23,9 @@ public class FlashcardRepository : IFlashcardRepository
     {
         return await _context.FlashCards.FirstOrDefaultAsync(f => f.Id == id);
     }
+
+    public async Task<IEnumerable<CardModel>> GetFlashcardsByDeckId(int deckId)
+    {
+        return await _context.FlashCards.Where(f => f.DeckId == deckId).ToListAsync();
+    }
 }

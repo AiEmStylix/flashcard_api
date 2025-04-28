@@ -6,4 +6,5 @@ public interface IFlashcardRepository
 {
     Task<IEnumerable<CardModel>> GetAllFlashcardAsync();
     Task<CardModel> GetFlashcardByIdAsync(int id);
+    Task<IEnumerable<CardModel>> GetFlashcardsByDeckId(int deckId);
 }

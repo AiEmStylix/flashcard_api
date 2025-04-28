@@ -6,5 +6,6 @@ namespace flashcard_backend.Interfaces;
 public interface IFlashcardService
 {
     Task<IEnumerable<FlashcardResponse?>> GetAllFlashcard();
-    Task<CardModel?> GetFlashcardById (int id);
+    Task<FlashcardResponse?> GetFlashcardById (int id);
+    Task<IEnumerable<FlashcardResponse?>> GetAllFlashCardByDeck(int deckId);
 }

@@ -1,6 +1,7 @@
 using flashcard_backend.DTOs;
 using flashcard_backend.Interfaces;
 using flashcard_backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace flashcard_backend.Controllers;
@@ -22,7 +23,31 @@ public class FlashcardController : ControllerBase
         var flashcards = await _flashcardService.GetAllFlashcard();
         if (flashcards is null)
         {
-            return BadRequest(new { message = "No Flashcard found in the database" });
+            return NotFound(new { message = "No Flashcard found in the database" });
+        }
+
+        return Ok(flashcards);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<FlashcardResponse>> GetFlashcardById(int id)
+    {
+        var flashcard = await _flashcardService.GetFlashcardById(id);
+        if (flashcard is null)
+        {
+            return NotFound("No flashcard with that id found in the database");
+        }
+
+        return Ok(flashcard);
+    }
+
+    [HttpGet("deck/{id}")]
+    public async Task<ActionResult<FlashcardResponse>> GetFlashCardByDeckId(int id)
+    {
+        var flashcards = await _flashcardService.GetAllFlashCardByDeck(id);
+        if (flashcards is null)
+        {
+            return NotFound("No flashcard with that deck id found in the database");
         }
 
         return Ok(flashcards);
