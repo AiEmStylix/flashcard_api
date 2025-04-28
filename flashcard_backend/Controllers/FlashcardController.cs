@@ -29,7 +29,7 @@ public class FlashcardController : ControllerBase
         return Ok(flashcards);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("card/{id}")]
     public async Task<ActionResult<FlashcardResponse>> GetFlashcardById(int id)
     {
         var flashcard = await _flashcardService.GetFlashcardById(id);
@@ -51,5 +51,17 @@ public class FlashcardController : ControllerBase
         }
 
         return Ok(flashcards);
+    }
+    
+    [HttpPost("create")]
+    public async Task<ActionResult<FlashcardResponse>> CreateFlashcard([FromBody] FlashcardRequest request)
+    {
+        var response = await _flashcardService.CreateFlashcard(request);
+        if (response is null)
+        {
+            return BadRequest(new {message = "Create new flashcard failed, might be duplicate in database"});
+        }
+
+        return Ok(response);
     }
 }

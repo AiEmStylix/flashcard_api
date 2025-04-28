@@ -62,4 +62,29 @@ public class FlashcardService : IFlashcardService
             DeckId = flashcard.DeckId,
         }).ToList();
     }
+
+    public async Task<FlashcardResponse?> CreateFlashcard(FlashcardRequest flashcardRequest)
+    {
+        var flashcard = new CardModel
+        {
+            Question = flashcardRequest.Question,
+            Answer = flashcardRequest.Answer,
+            CreatedAt = DateTime.UtcNow,
+            DeckId = flashcardRequest.DeckId,
+        };
+        var result = await _flashcardRepository.CreateFlashCard(flashcard);
+        if (result is null)
+        {
+            return null;
+        }
+
+        return new FlashcardResponse
+        {
+            Id = result.Id,
+            Question = flashcard.Question,
+            Answer = flashcard.Answer,
+            CreatedAt = flashcard.CreatedAt,
+            DeckId = flashcard.DeckId,
+        };
+    }
 }

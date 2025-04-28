@@ -1,4 +1,5 @@
 using flashcard_backend.DatabaseContext;
+using flashcard_backend.DTOs;
 using flashcard_backend.Interfaces;
 using flashcard_backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,5 +28,20 @@ public class FlashcardRepository : IFlashcardRepository
     public async Task<IEnumerable<CardModel>> GetFlashcardsByDeckId(int deckId)
     {
         return await _context.FlashCards.Where(f => f.DeckId == deckId).ToListAsync();
+    }
+
+    public async Task<CardModel> CreateFlashCard(CardModel cardModel)
+    {
+        bool isExist = await _context.FlashCards.AnyAsync(f => f.Id == cardModel.Id);
+        
+        //Return if user exist in database
+        if (isExist)
+        {
+            return null;
+        }
+
+        _context.FlashCards.Add(cardModel);
+        await _context.SaveChangesAsync();
+        return cardModel;
     }
 }
