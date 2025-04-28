@@ -9,17 +9,12 @@ public class CardModel
     [Key]
     public int Id { get; set; }
 
-    [ForeignKey("Deck")]
+    public string Question { get; set; }
+    public string Answer { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastReviewed { get; set; }
     public int DeckId { get; set; }
-    public DeckModel Deck { get; set; }
-
-    [Required]
-    public string Front { get; set; } = string.Empty;
-
-    [Required]
-    public string Back { get; set; } = string.Empty;
-
-    public string? ImageUrl { get; set; }
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    // Navigation property
+    public virtual DeckModel Deck { get; set; }
 }

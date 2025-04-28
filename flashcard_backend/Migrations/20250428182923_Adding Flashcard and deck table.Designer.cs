@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using flashcard_backend.DatabaseContext;
@@ -11,9 +12,11 @@ using flashcard_backend.DatabaseContext;
 namespace flashcard_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428182923_Adding Flashcard and deck table")]
+    partial class AddingFlashcardanddecktable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace flashcard_backend.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("flashcards", (string)null);
+                    b.ToTable("flashcards");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>
@@ -91,7 +94,7 @@ namespace flashcard_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("decks", (string)null);
+                    b.ToTable("decks");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.RefreshToken", b =>
@@ -118,7 +121,7 @@ namespace flashcard_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("refresh_tokens", (string)null);
+                    b.ToTable("refresh_tokens");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.UserModel", b =>
@@ -173,7 +176,7 @@ namespace flashcard_backend.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.CardModel", b =>

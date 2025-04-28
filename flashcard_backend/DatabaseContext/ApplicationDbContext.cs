@@ -9,7 +9,8 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
     public DbSet<UserModel> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-    
+    public DbSet<DeckModel> Decks { get; set; }
+    public DbSet<CardModel> FlashCards { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserModel>()

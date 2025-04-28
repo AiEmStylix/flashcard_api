@@ -7,7 +7,6 @@ namespace flashcard_backend.Controllers;
 
 [ApiController]
 [Route("/api/v1/[controller]")]
-[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

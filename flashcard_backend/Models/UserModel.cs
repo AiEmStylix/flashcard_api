@@ -35,7 +35,7 @@ public class UserModel
     public DateTime? LastLogin { get; set; }
 
     // Relationships
-    public List<DeckModel> Decks { get; set; } = new();
+    public virtual ICollection<DeckModel> Decks { get; set; }
 }
 
 public enum UserRole

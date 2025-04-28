@@ -13,8 +13,7 @@ namespace flashcard_backend.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-
-
+    
     public AuthController(IAuthService authService)
     {
         _authService = authService;
@@ -30,7 +29,7 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
         SetRefreshTokenCookies(result.RefreshToken);
-        return result;
+        return Ok(result);
     }
 
     [AllowAnonymous]
@@ -60,7 +59,7 @@ public class AuthController : ControllerBase
         if (result is not null)
         {
             SetRefreshTokenCookies(result.RefreshToken!);
-            return result;
+            return Ok(result);
         }
 
         return Unauthorized();
