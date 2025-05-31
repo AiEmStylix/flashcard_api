@@ -47,7 +47,7 @@ public class JwtService : IJwtService
     //     };
     // }
 
-    public string GenerateAccessToken(string email)
+    public string GenerateAccessToken(string email, string username)
     {
         var issuer = _configuration["JwtConfig:Issuer"];
         var audience = _configuration["JwtConfig:Audience"];
@@ -58,7 +58,8 @@ public class JwtService : IJwtService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email, email)
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(JwtRegisteredClaimNames.Name, username)
             }),
             Expires = tokenExpiryTimeStamp,
             Issuer = issuer,

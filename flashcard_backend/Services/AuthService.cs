@@ -43,7 +43,7 @@ public class AuthService : IAuthService
 
         return new LoginResponse
         {
-            AccessToken = _jwtService.GenerateAccessToken(user.Email),
+            AccessToken = _jwtService.GenerateAccessToken(user.Email, user.Username),
             Email = user.Email,
             RefreshToken = _jwtService.GenerateRefreshToken(),
             ExpiresIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.UtcNow).TotalSeconds,
@@ -66,7 +66,7 @@ public class AuthService : IAuthService
         
         var tokenValidityMins = _configuration.GetValue<int>("JwtConfig:TokenValidityMins");
         var tokenExpiryTimeStamp = DateTime.UtcNow.AddMinutes(tokenValidityMins);
-        var accessToken = _jwtService.GenerateAccessToken(request.Email);
+        var accessToken = _jwtService.GenerateAccessToken(userAccount.Email, userAccount.Username);
         var refreshToken = _jwtService.GenerateRefreshToken();
 
         await _refreshTokenRepository.CreateRefreshToken(new RefreshToken
@@ -103,7 +103,8 @@ public class AuthService : IAuthService
         {
             Email = request.Email,
             Username = request.Username,
-            FullName = request.FullName,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             PasswordHash = PasswordHashHandler.HashPassword(request.Password),
             CreatedAt = DateTime.UtcNow,
             Role = UserRole.User
@@ -116,7 +117,7 @@ public class AuthService : IAuthService
         
         var tokenValidityMins = _configuration.GetValue<int>("JwtConfig:TokenValidityMins");
         var tokenExpiryTimeStamp = DateTime.UtcNow.AddMinutes(tokenValidityMins);
-        var accessToken = _jwtService.GenerateAccessToken(request.Email);
+        var accessToken = _jwtService.GenerateAccessToken(registerAccount.Email, registerAccount.Username);
         var refreshToken = _jwtService.GenerateRefreshToken();
         
         //Save the refresh token in the database
@@ -133,6 +134,50 @@ public class AuthService : IAuthService
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.UtcNow).TotalSeconds,
+        };
+    }
+
+    public async Task<object?> UpdateProfile(int userId, UpdateProfileRequest request)
+    {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Username))
+        {
+            user.Username = request.Username;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            user.Email = request.Email;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+        {
+            user.FirstName = request.FirstName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.LastName))
+        {
+            user.LastName = request.LastName;
+        }
+
+        var result = await _userRepository.UpdateUserAsync(user);
+        if (result is null)
+        {
+            return null;
+        }
+
+        return new
+        {
+            id = user.Id,
+            username = user.Username,
+            email = user.Email,
+            firstName = user.FirstName,
+            lastName = user.LastName
         };
     }
 }

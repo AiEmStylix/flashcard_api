@@ -5,6 +5,6 @@ namespace flashcard_backend.Interfaces;
 
 public interface IJwtService
 {
-    string GenerateAccessToken(string email);
+    string GenerateAccessToken(string email, string username);
     string GenerateRefreshToken();
 }

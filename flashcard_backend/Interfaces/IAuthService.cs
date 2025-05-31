@@ -8,4 +8,5 @@ public interface IAuthService
     Task<LoginResponse?> Authenticate(LoginRequestDto request);
     Task<RegisterResponse?> Register(RegisterRequest request);
     Task<LoginResponse?> RefreshToken(string token);
+    Task<object?> UpdateProfile(int userId, UpdateProfileRequest request);
 }

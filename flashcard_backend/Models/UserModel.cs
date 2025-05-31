@@ -15,8 +15,12 @@ public class UserModel
     public string Username { get; set; }
     
     [Required]
-    [StringLength(100)]
-    public string FullName { get; set; }
+    [StringLength(255)]
+    public string FirstName { get; set; }
+    
+    [Required]
+    [StringLength(255)]
+    public string LastName { get; set; }
 
     [Required]
     [EmailAddress]
@@ -33,9 +37,7 @@ public class UserModel
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLogin { get; set; }
-
-    // Relationships
-    public virtual ICollection<DeckModel> Decks { get; set; }
+    
 }
 
 public enum UserRole

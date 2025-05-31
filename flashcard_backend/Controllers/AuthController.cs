@@ -70,12 +70,13 @@ public class AuthController : ControllerBase
     public IActionResult GetMe()
     {
         var email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email))
+        var username = User.FindFirst("name")?.Value;
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username))
         {
-            return Unauthorized(new { message = "User not found" });
+            return Unauthorized("Invalid or missing user claims");
         }
 
-        return Ok(new { email });
+        return Ok(new { email, username });
     }
 
     [Authorize]
@@ -97,4 +98,24 @@ public class AuthController : ControllerBase
         };
         Response.Cookies.Append("refreshToken", refreshtoken, cookieOptions);
     }
+
+    [Authorize]
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return Unauthorized("Invalid or missing user ID");
+        }
+
+        var result = await _authService.UpdateProfile(userId, request);
+        if (result == null)
+        {
+            return BadRequest("Failed to update profile");
+        }
+
+        return Ok(result);
+    }
+
 }

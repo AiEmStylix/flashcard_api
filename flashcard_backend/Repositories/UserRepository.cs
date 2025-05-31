@@ -56,7 +56,8 @@ public class UserRepository : IUserRepository
       }
       
       //Update properties
-      existingUser.FullName = user.FullName;
+      existingUser.FirstName = user.FirstName;
+      existingUser.LastName = user.LastName;
       existingUser.Role = user.Role;
       // existingUser.Status = user.Status;
 

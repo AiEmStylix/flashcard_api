@@ -20,7 +20,8 @@ public class UserService : IUserService
             Id = user.Id,
             Username = user.Username,
             Email = user.Email,
-            FullName = user.FullName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Role = user.Role,
             // Status = user.Status
         }).ToList();
@@ -34,7 +35,8 @@ public class UserService : IUserService
             Id = user.Id,
             Username = user.Username,
             Email = user.Email,
-            FullName = user.FullName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Role = user.Role,
         };
     }
@@ -52,8 +54,11 @@ public class UserService : IUserService
         {
             existingUser.Email = userDto.Email;
         }
-        if (!string.IsNullOrWhiteSpace(userDto.FullName))
-            existingUser.FullName = userDto.FullName;
+        if (!string.IsNullOrWhiteSpace(userDto.FirstName))
+            existingUser.FirstName = userDto.FirstName;
+        
+        if (!string.IsNullOrWhiteSpace(userDto.LastName))
+            existingUser.LastName = userDto.LastName;
 
         if (userDto.Role.HasValue)
             existingUser.Role = userDto.Role.Value;
@@ -66,7 +71,8 @@ public class UserService : IUserService
             Id = updatedUser.Id,
             Username = updatedUser.Username,
             Email = updatedUser.Email,
-            FullName = updatedUser.FullName,
+            FirstName = updatedUser.FirstName,
+            LastName = updatedUser.LastName,
             Role = updatedUser.Role,
         };
     }

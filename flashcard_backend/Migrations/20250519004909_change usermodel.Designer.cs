@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using flashcard_backend.DatabaseContext;
@@ -11,9 +12,11 @@ using flashcard_backend.DatabaseContext;
 namespace flashcard_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519004909_change usermodel")]
+    partial class changeusermodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,78 @@ namespace flashcard_backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("flashcard_backend.Models.CardModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("answer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("DeckId")
+                        .HasColumnType("integer")
+                        .HasColumnName("deck_id");
+
+                    b.Property<DateTime?>("LastReviewed")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_reviewed");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("question");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeckId");
+
+                    b.ToTable("flashcards");
+                });
+
+            modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("decks");
+                });
 
             modelBuilder.Entity("flashcard_backend.Models.RefreshToken", b =>
                 {
@@ -47,40 +122,6 @@ namespace flashcard_backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("refresh_tokens");
-                });
-
-            modelBuilder.Entity("flashcard_backend.Models.Topic", b =>
-                {
-                    b.Property<int>("TopicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("topic_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TopicId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("name");
-
-                    b.HasKey("TopicId");
-
-                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("flashcard_backend.Models.UserModel", b =>
@@ -144,50 +185,36 @@ namespace flashcard_backend.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("flashcard_backend.Models.Vocabulary", b =>
+            modelBuilder.Entity("flashcard_backend.Models.CardModel", b =>
                 {
-                    b.Property<int>("VocabularyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("vocabulary_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VocabularyId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Definition")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("definition");
-
-                    b.Property<int>("TopicId")
-                        .HasColumnType("integer")
-                        .HasColumnName("topic_id");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("word");
-
-                    b.HasKey("VocabularyId");
-
-                    b.HasIndex("TopicId");
-
-                    b.ToTable("vocabularies");
-                });
-
-            modelBuilder.Entity("flashcard_backend.Models.Vocabulary", b =>
-                {
-                    b.HasOne("flashcard_backend.Models.Topic", "Topic")
-                        .WithMany()
-                        .HasForeignKey("TopicId")
+                    b.HasOne("flashcard_backend.Models.DeckModel", "Deck")
+                        .WithMany("FlashCards")
+                        .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Topic");
+                    b.Navigation("Deck");
+                });
+
+            modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>
+                {
+                    b.HasOne("flashcard_backend.Models.UserModel", "User")
+                        .WithMany("Decks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("flashcard_backend.Models.DeckModel", b =>
+                {
+                    b.Navigation("FlashCards");
+                });
+
+            modelBuilder.Entity("flashcard_backend.Models.UserModel", b =>
+                {
+                    b.Navigation("Decks");
                 });
 #pragma warning restore 612, 618
         }
