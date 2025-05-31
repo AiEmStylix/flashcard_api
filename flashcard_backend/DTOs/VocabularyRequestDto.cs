@@ -1,10 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace flashcard_backend.DTOs;
 
-public class VocabularyDto
-{ 
-    public int VocabularyId { get; set; } 
+public class VocabularyRequestDto
+{
+    [Required]
+    [MaxLength(200)]
     public string Word { get; set; }
+
+    [Required]
     public string Definition { get; set; }
+
     public int TopicId { get; set; }
-    public DateTime CreatedAt { get; set; }
 }

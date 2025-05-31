@@ -5,11 +5,11 @@ namespace flashcard_backend.Interfaces;
 
 public interface IVocabularyService
 {
-    Task<IEnumerable<Vocabulary>> GetAllAsync();
-    Task<VocabularyDto> CreateAsync(VocabularyCreateDto createDto);
-    Task<VocabularyDto> GetByIdAsync(int vocabularyId);
-    Task<IEnumerable<VocabularyDto>> GetByTopicAsync(int topicId);
-    Task<IEnumerable<VocabularyDto>> GetByDifficultyAsync(int difficulty);
-    Task<VocabularyDto> UpdateAsync(int vocabularyId, VocabularyCreateDto updateDto);
-    Task DeleteAsync(int vocabularyId);
+    Task<IEnumerable<VocabularyResponseDto>> GetAllAsync();
+    Task<VocabularyResponseDto> CreateAsync(VocabularyRequestDto requestDto);
+    Task<VocabularyResponseDto> GetByIdAsync(int vocabularyId);
+    Task<IEnumerable<VocabularyResponseDto>> GetByTopicAsync(int topicId);
+    Task<IEnumerable<VocabularyResponseDto>> GetByDifficultyAsync(int difficulty);
+    Task<VocabularyResponseDto> UpdateAsync(int vocabularyId, VocabularyRequestDto updateDto);
+    Task<bool> DeleteAsync(int vocabularyId);
 }

@@ -13,65 +13,118 @@ public class VocabularyService : IVocabularyService
         _vocabularyRepository = vocabularyRepository;
     }
 
-    public async Task<IEnumerable<Vocabulary>> GetAllAsync()
+    public async Task<IEnumerable<VocabularyResponseDto>> GetAllAsync()
     {
         var vocabulary = await _vocabularyRepository.GetAllAsync();
         if (vocabulary is null)
         {
-            return null;
+            return Enumerable.Empty<VocabularyResponseDto>();
         }
-        return vocabulary;
+
+        return vocabulary.Select(v => new VocabularyResponseDto
+        {
+            VocabularyId = v.VocabularyId,
+            Word = v.Word,
+            Definition = v.Definition,
+            TopicId = v.TopicId,
+            CreatedAt = v.CreatedAt,
+        });
     }
 
-    public async Task<VocabularyDto> CreateAsync(VocabularyCreateDto createDto)
+    public async Task<VocabularyResponseDto> CreateAsync(VocabularyRequestDto requestDto)
     {
-        if (string.IsNullOrWhiteSpace(createDto.Word))
+        if (string.IsNullOrWhiteSpace(requestDto.Word))
         {
             return null;
         }
         
         var vocabularyEntity = new Vocabulary
         {
-            Word = createDto.Word,
-            Definition = createDto.Definition,
-            TopicId = createDto.TopicId, // You can change this to use a dynamic topic if needed
+            Word = requestDto.Word,
+            Definition = requestDto.Definition,
+            TopicId = requestDto.TopicId, // You can change this to use a dynamic topic if needed
         };
         
         var addedVocabulary = await _vocabularyRepository.AddAsync(vocabularyEntity);
-        
-        var vocabularyDto = new VocabularyDto
+
+        return new VocabularyResponseDto
         {
+            VocabularyId = addedVocabulary.VocabularyId,
             Word = addedVocabulary.Word,
             Definition = addedVocabulary.Definition,
-            TopicId = addedVocabulary.TopicId,
-            CreatedAt = addedVocabulary.CreatedAt,
         };
-
-        return vocabularyDto;
     }
 
-    public Task<VocabularyDto> GetByIdAsync(int vocabularyId)
+    public async Task<VocabularyResponseDto> GetByIdAsync(int vocabularyId)
+    {
+        var vocabulary = await _vocabularyRepository.GetByIdAsync(vocabularyId);
+        if (vocabulary is null)
+        {
+            return null;
+        }
+
+        return new VocabularyResponseDto
+        {
+            VocabularyId = vocabulary.VocabularyId,
+            Word = vocabulary.Word,
+            Definition = vocabulary.Definition,
+            CreatedAt = vocabulary.CreatedAt,
+            TopicId = vocabulary.TopicId,
+        };
+    }
+
+    public async Task<IEnumerable<VocabularyResponseDto>> GetByTopicAsync(int topicId)
+    {
+        var vocabulary = await _vocabularyRepository.GetByTopicIdAsync(topicId);
+        if (vocabulary is null)
+        {
+            return Enumerable.Empty<VocabularyResponseDto>();
+        }
+
+        return vocabulary.Select(v => new VocabularyResponseDto
+        {
+            VocabularyId = v.VocabularyId,
+            Word = v.Word,
+            Definition = v.Definition,
+            TopicId = v.TopicId,
+            CreatedAt = v.CreatedAt,
+        });
+    }
+
+    public async Task<IEnumerable<VocabularyResponseDto>> GetByDifficultyAsync(int difficulty)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<VocabularyDto>> GetByTopicAsync(int topicId)
+    public async Task<VocabularyResponseDto> UpdateAsync(int vocabularyId, VocabularyRequestDto updateDto)
     {
-        throw new NotImplementedException();
+        var vocabulary = await _vocabularyRepository.GetByIdAsync(vocabularyId);
+        if (vocabulary is null)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(updateDto.Word) || string.IsNullOrWhiteSpace(updateDto.Definition))
+        {
+            return null;
+        }
+
+        vocabulary.Word = updateDto.Word;
+        vocabulary.Definition = updateDto.Definition;
+        vocabulary.TopicId = updateDto.TopicId;
+        var vocabularyEntity = await _vocabularyRepository.UpdateAsync(vocabulary);
+        return new VocabularyResponseDto
+        {
+            VocabularyId = vocabularyEntity.VocabularyId,
+            Word = vocabularyEntity.Word,
+            Definition = vocabularyEntity.Definition,
+            TopicId = vocabularyEntity.TopicId,
+            CreatedAt = vocabularyEntity.CreatedAt,
+        };
     }
 
-    public Task<IEnumerable<VocabularyDto>> GetByDifficultyAsync(int difficulty)
+    public async Task<bool> DeleteAsync(int vocabularyId)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<VocabularyDto> UpdateAsync(int vocabularyId, VocabularyCreateDto updateDto)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int vocabularyId)
-    {
-        throw new NotImplementedException();
+        return await _vocabularyRepository.DeleteAsync(vocabularyId);
     }
 }

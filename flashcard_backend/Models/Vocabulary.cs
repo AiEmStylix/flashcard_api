@@ -15,13 +15,10 @@ public class Vocabulary
     [Required]
     public string Definition { get; set; }
     
-    //Foregin key
-    public int TopicId { get; set; }
-    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
-    //Navigation Props
-    [ForeignKey("TopicId")]
-    public virtual Topic Topic { get; set; }
+    //Navigation Property
+    public int TopicId { get; set; }
+    public  Topic Topic { get; set; }
     
 }

@@ -45,14 +45,17 @@ public class Repository<T> : IRepository<T> where T : class
         return entity;
     }
 
-    public virtual async Task DeleteAsync(int id)
+    public virtual async Task<bool> DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
         if (entity != null)
         {
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
+            return true;
         }
+
+        return false;
     }
 
     public virtual async Task<bool> ExistsAsync(int id)

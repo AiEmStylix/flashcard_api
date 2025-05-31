@@ -18,4 +18,5 @@ public class Topic
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; }
     
+    public List<Vocabulary> Vocabularies { get; set; } = new();
 }
